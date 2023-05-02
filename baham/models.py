@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from baham.constants import COLOURS, TOWNS
-from baham.enum_types import VehicleType, VehicleStatus
+from baham.enum_types import UserType, VehicleType, VehicleStatus
 
 
 # Custom validators
@@ -46,17 +46,13 @@ class Vehicle(models.Model):
         return f"{self.model.vendor} {self.model.model} {self.colour}"
 
 
-class User(models.Model):
+class UserProfile(models.Model):
     # Should have one-to-one relationship with a Django user
-    
-    user_id = models.AutoField(primary_key=True, db_column='id')
-    username = models.CharField(max_length=20, unique=True, null=False, blank=False)
-    password_hash = models.CharField(max_length=512, null=False, blank=False)
-    first_name = models.CharField(max_length=50, null=False, blank=False)
-    last_name = models.CharField(max_length=50, null=False, blank=False)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     birthdate = models.DateField()
     gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female')])
-    email = models.EmailField(null=False, blank=False)
+    type = models.CharField(max_length=10, choices=[(t.name, t.value) for t in UserType])
     primary_contact = models.CharField(max_length=20, null=False, blank=False)
     alternate_contact = models.CharField(max_length=20, null=True)
     address = models.CharField(max_length=255)
@@ -72,17 +68,11 @@ class User(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
     
-class Owner(User):
-    date_joined = models.DateField(null=False)
-    active_contracts = models.PositiveSmallIntegerField(default=0)
-
-class Companion(User):
-    has_contract = models.BooleanField(default=False, null=False)
 
 class Contract(models.Model):
     contract_id = models.AutoField(primary_key=True, db_column='id')
     vehicle = models.ForeignKey(Vehicle, null=False, on_delete=models.CASCADE)
-    companion = models.ForeignKey(Companion, null=False, on_delete=models.CASCADE)
+    companion = models.ForeignKey(UserProfile, null=False, on_delete=models.CASCADE)
     effective_start_date = models.DateField(null=False)
     expiry_date = models.DateField()
     is_active = models.BooleanField(default=True)
