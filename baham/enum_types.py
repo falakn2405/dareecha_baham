@@ -1,5 +1,10 @@
 from enum import Enum
 
+class UserType(Enum):
+    OWNER = "OWNER"
+    COMPANION = "COMPANION"
+
+
 class VehicleType(Enum):
     AUTO_RICKSHAW = "Auto Rickshaw"
     SEDAN = "Sedan"
