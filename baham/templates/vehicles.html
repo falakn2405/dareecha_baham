@@ -1,0 +1,56 @@
+{% include 'header.html' %}
+
+<main role="main">
+
+    <div class="container">
+        <span>
+            <h1>Vehicles seeking your companionship</h1>
+        </span>
+
+        {% if vehicles|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+          No data here, just a digital ghost town 💔
+        </div>
+        {% else %}
+        <table id="dataTable" class="table table-striped display" style="width:100%">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Model</th>
+                <th scope="col">Colour</th>
+                <th scope="col">Type</th>
+                <th scope="col">Owner...</th>
+                <th scope="col">Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for v in vehicles %}
+            <tr>
+                <th scope="row"><a href="{% url 'update_vehicle' id={{v.vehicle_id}} %}">{{v.registration_number}}</a></th>
+                <td>{{v.vendor}} {{v.model}}</td>
+                <td>
+                    <div class="input-color">
+                        <div style="width: 20px; height: 15px; display: inline-block; background-color: v; border:solid 1px"></div>
+                        <label>{{v.colour}}</label>
+                    </div>
+                </td>
+                <td><img src="/static/images/{{v.type}}.png" width="40px"></td>
+                <td>
+                    <a href="#">{{v.owner_name}}</a>
+                </td>
+                <td>
+                    {% if allow_edit %}
+                    <a class="btn btn-warning" href="#">Edit</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'create_vehicle' %}">Add Yours >></a>
+    </div> <!-- /container -->
+
+</main>
+
+{% include 'footer.html' %}
