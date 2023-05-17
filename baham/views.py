@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.template import loader
 from django.urls import reverse
+from django.shortcuts import redirect
 
 from baham.enum_types import VehicleType
 from baham.models import VehicleModel
@@ -25,7 +26,7 @@ def view_aboutus(request):
 
 def view_vehicles(request):
     template = loader.get_template('vehicles.html')
-    vehicles = VehicleModel.objects.all().order_by('vendor')
+    vehicles = VehicleModel.objects.filter(voided=False).order_by('vendor')
     context = {
         'navbar': 'vehicles',
         'vehicles': vehicles
@@ -54,3 +55,14 @@ def save_vehicle(request):
     vehicleModel = VehicleModel(vendor=_vendor, model=_model, type=_type, capacity=_capacity)
     vehicleModel.save()
     return HttpResponseRedirect(reverse('vehicles'))
+
+def delete_vehicle(request, model_id):
+    vehicle_model = VehicleModel.objects.get(pk=model_id)
+    vehicle_model.delete()
+    return redirect('vehicles')
+
+
+def undelete_vehicle(request, model_id):
+    vehicle_model = VehicleModel.objects.get(pk=model_id)
+    vehicle_model.undelete()
+    return redirect('vehicles')
