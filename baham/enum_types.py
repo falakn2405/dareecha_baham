@@ -1,10 +1,11 @@
 from enum import Enum
 
+
 class UserType(Enum):
     OWNER = "OWNER"
     COMPANION = "COMPANION"
 
-
+    
 class VehicleType(Enum):
     AUTO_RICKSHAW = "Auto Rickshaw"
     SEDAN = "Sedan"
@@ -12,10 +13,11 @@ class VehicleType(Enum):
     SUV = "Sub-Urban Vehicle"
     VAN = "Van"
     HIGH_ROOF = "High Roof"
-    MOTORCYCLE = "Motor Cycle / Scooter"
+    MOTORCYCLE = "Moto cycle/Scooter"
 
     def __str__(self):
-        return super.value
+        return self.value
+
 
 class VehicleStatus(Enum):
     AVAILABLE = "Available"
